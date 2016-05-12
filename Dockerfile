@@ -8,12 +8,12 @@ RUN apt-get update -y
 
 # Install nginx
 RUN apt-get install nginx -y \
-  && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 # Apply Nginx configuration
 ADD config/nginx.conf /opt/etc/nginx.conf
-ADD config/laravel /etc/nginx/sites-available/laravel
-RUN ln -s /etc/nginx/sites-available/laravel /etc/nginx/sites-enabled/laravel && \
+ADD config/general /etc/nginx/sites-available/general
+RUN ln -s /etc/nginx/sites-available/general /etc/nginx/sites-enabled/general && \
     rm /etc/nginx/sites-enabled/default
 
 # forward request and error logs to docker log collector
@@ -24,8 +24,7 @@ RUN ln -sf /dev/stderr /var/log/nginx/error.log
 ADD config/nginx-start.sh /opt/bin/nginx-start.sh
 RUN chmod u=rwx /opt/bin/nginx-start.sh
 
-RUN mkdir -p /data
-VOLUME ["/data"]
+VOLUME ["/var/www/html"]
 
 EXPOSE 80 443
 WORKDIR /opt/bin
